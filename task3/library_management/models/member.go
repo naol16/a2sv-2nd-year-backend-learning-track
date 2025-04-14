@@ -1,6 +1,6 @@
 package models
 
-type Memebr struct{
+type Member struct{
 	ID int
 	Name string
 	BorrowedBooks []Book

@@ -1,0 +1,28 @@
+ Introduction
+A straightforward, console-based application developed in Go for handling basic library operations involving books and members.
+
+ Key Features
+Add or remove books from the collection
+
+Borrow and return books
+
+Display lists of available and borrowed books
+
+Project Structure
+main.go: Application entry point
+
+models/: Defines Book and Member data structures
+
+services/: Contains core logic and implements the LibraryManager interface
+
+controllers/: Handles user interaction through the console
+
+ How to Use
+Launch the program and interact via the terminal menu to perform library operations.
+
+Potential Improvements
+Implement data persistence using files or a database
+
+Add user login and authentication
+
+Enhance the user interface for a smoother terminal experience
