@@ -35,7 +35,7 @@ func UpdateTask(id string, updated model.Task) (*model.Task, error) {
 		if t.ID == id {
 			updated.ID = id
 			tasks[i] = updated
-			return &updated, nil
+			 return &updated, nil
 		}
 	}
 	return nil, errors.New("task not found")
