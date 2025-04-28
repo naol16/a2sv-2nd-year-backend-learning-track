@@ -2,10 +2,10 @@ package controller
 
 import (
 	"net/http"
-
+     "log"
 	"taskmanager/data"
 	"taskmanager/model"
-
+    "go.mongodb.org/mongo-driver/bson/primitive"
 	"github.com/gin-gonic/gin"
 )
 type Task struct{
@@ -13,13 +13,22 @@ type Task struct{
 }
 
 func GetTasks(c *gin.Context) {
-	c.JSON(http.StatusOK, data.GetAllTasks())
+	tasks,err:=data.GetAllTasks()
+	if err!=nil{
+		log.Fatal(err)
+	}
+
+	c.JSON(http.StatusOK,tasks)
 }
 
-func GetTaskByID(c *gin.Context) {
+ func GetTaskByID(c *gin.Context) {
 	id := c.Param("id")
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err!=nil{
+		log.Fatal(err)
+	}
 
-	task, err := data.GetTaskByID(id)
+	 task, err := data.GetTaskByID(objectID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -34,13 +43,22 @@ func CreateTask(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	created := data.CreateTask(task)
+	created, err := data.CreateTask(task)
+if err != nil {
+    // Handle error (log, return HTTP error, etc.)
+    log.Printf("Failed to create task: %v", err)
+    return // or c.JSON() if in a Gin handler
+}
 	c.JSON(http.StatusCreated, created)
 }
 
 func UpdateTask(c *gin.Context) {
 	id := c.Param("id")
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err!=nil{
+		log.Fatal(err)
+	}
+
 
 
 	var task model.Task
@@ -49,7 +67,7 @@ func UpdateTask(c *gin.Context) {
 		return
 	}
 
-	updated, err := data.UpdateTask(id,task)
+	updated, err := data.UpdateTask(objectID,task)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -60,11 +78,17 @@ func UpdateTask(c *gin.Context) {
 
 func DeleteTask(c *gin.Context) {
 	id:=c.Param("id")
-
-	if err := data.DeleteTask(id); err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-		return
+	objectid, err := primitive.ObjectIDFromHex(id)
+	if  err!=nil {
+		log.Fatal(err)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "task deleted"})
+
+	 deleted := data.DeleteTask(objectid); 
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err})
+		
+	}
+
+	c.JSON(http.StatusOK, gin.H{"deleted":deleted})
 }

@@ -1,10 +1,11 @@
 package model
 import("time"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 type Task struct {
-	ID          string   `json:"id"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Status      string `json:"status"`
-	DueDate	    time.Time `json:"due_date"`
+	ID   primitive.ObjectID   `json:"id,omitempty" bson:"_id,omitempty"`
+	Title       string `json:"title" bson:"title"`
+	Description string `json:"description" bson:"description"`
+	Status      string `json:"status" bson:"status"`
+	DueDate	    time.Time `json:"due_date,omitempty" bson:"due_date,omitempty"`
 	}	
