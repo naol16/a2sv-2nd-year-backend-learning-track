@@ -20,11 +20,11 @@ func main() {
 	// fmt.Println("MongoDB URI:", os.Getenv(MONGO_URI))
 
 //here it is the context
+err := godotenv.Load()
+if err != nil {
+	log.Fatal("Error loading .env file")
+}
 ctx := context.TODO()
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
 	
     myurl:=os.Getenv("MONGO_URI")
 	clientOptions:= options.Client().ApplyURI(myurl)
