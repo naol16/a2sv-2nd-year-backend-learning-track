@@ -1,15 +1,14 @@
 package infrastrcure
 
 import (
+	"fmt"
 	"os"
 	"strings"
-
 
 	"github.com/joho/godotenv"
 
 	"log"
 
-	
 	"github.com/gin-gonic/gin"
 )
 
@@ -69,6 +68,10 @@ func AuthorizeRole(requiredRole string) gin.HandlerFunc {
 
 		role, ok := roleValue.(string)
 		if !ok || role != requiredRole {
+			fmt.Println("Role:", role)
+			fmt.Println("Required Role:", requiredRole)
+			// Log the error or take any other action you need
+             fmt.Println(ok)
 			c.JSON(403, gin.H{"error": "Forbidden: insufficient permissions"})
 			c.Abort()
 			return

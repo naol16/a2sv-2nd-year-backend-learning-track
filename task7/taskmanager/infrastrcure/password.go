@@ -1,16 +1,11 @@
 package infrastrcure
 import(
 	"golang.org/x/crypto/bcrypt"
-	"taskmanager/domain"
 	"log"
 
 )
-type   User  struct{
-	user  domain.User
-}
-func LoginChekcer(newuser domain.User, password string )  string{
-	usersHashedpassword := newuser.Password
-	bcrypterr:=bcrypt.CompareHashAndPassword([]byte(usersHashedpassword),[]byte(password))
+func LoginChekcer(newuserpassword string, password string )  string{
+	bcrypterr:=bcrypt.CompareHashAndPassword([]byte(newuserpassword),[]byte(password))
 	if bcrypterr!=nil{
 		return "either your password or username does not much"
 

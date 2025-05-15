@@ -11,10 +11,7 @@ import (
 	
 )
 
-type  users struct{
-	User  domain.User
 
-}
 
 func ValidateJWT(tokenString string, secretKey string) (jwt.MapClaims, error) {
 
@@ -38,15 +35,16 @@ func ValidateJWT(tokenString string, secretKey string) (jwt.MapClaims, error) {
 
 
 
-func   Generator(user  users)  (jwttoken  string ,err error) {
+func   Generator(user  domain.User)  (jwttoken  string ,err error) {
 
 	mysecretkey := os.Getenv("JWT_SECRET")
 	fmt.Println(mysecretkey)
 	var jwtsecret= []byte (mysecretkey)
+	fmt.Println(user.Role)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"email":   user.User.Email,
-		"name": user.User.Name,
-		"role": user.User.Password,
+		"email":   user.Email,
+		"name": user.Name,
+		"role": string(user.Role),
 	  })
 	  
 	  jwtToken, err := token.SignedString(jwtsecret)
