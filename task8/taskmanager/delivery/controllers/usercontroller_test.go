@@ -4,17 +4,21 @@ import (
 	"taskmanager/delivery/controllers"
 	"taskmanager/domain/mocks"
 	"taskmanager/utils"
-	"github.com/stretchr/testify/mock"
-	"github.com/stretchr/testify/assert"
-	"net/http"
-	"bytes"
-	"taskmanager/domain"
-	"net/http"
-	"encoding/json"
 
-	"github.com/stretchr/testify/suite"
+	// "github.com/stretchr/testify/mock"
+	// "github.com/stretchr/testify/assert"
+	"bytes"
+	"net/http"
+	"taskmanager/domain"
+
+	"encoding/json"
+	"testing"
+
 	"net/http/httptest"
+
 	"github.com/gin-gonic/gin"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
 
@@ -47,13 +51,15 @@ func (suite *UserControllerTestSuite) TestCreateUser() {
 		Role: "user",
 	}
 	suite.usercase.On("CreateUser",&user).Return("user created").Once()
-   requestbody,err := json.Marshal(user)
-	req, _ := http.Post(suite.testingServer.URL+"/users", "application/json", bytes.NewBuffer(requestbody))
-	// resp, err := suite.testingServer.Client().Do(req)
+   requestbody, err := json.Marshal(user)
+   if err != nil {
+		suite.T().Fatalf("Error marshalling user: %v", err)
+   }
+	response, _ := http.Post(suite.testingServer.URL+"/users", "application/json", bytes.NewBuffer(requestbody))
+	// resp, err := suite.testingServer.Client().Do(re
+	suite.Equal(http.StatusCreated, response.StatusCode)
+	assert.Equal(suite.T(), "user created", response.Status)
 	
-
-	suite.NoError(err)
-	suite.Equal(201, resp.StatusCode)
 	suite.usercase.AssertExpectations(suite.T())
 }
 
@@ -62,3 +68,22 @@ func (suite *UserControllerTestSuite) TearDownTest() {
 	suite.usercase.AssertExpectations(suite.T())
 }
 
+func (suite *UserControllerTestSuite) TestLoginUser() {
+	user := domain.User{
+		Email:  "checkemail",
+		Password: "password",
+	}
+	suite.usercase.On("LoginUser", &user).Return(true, "token").Once()
+	requestbody, err := json.Marshal(user)
+	if err != nil {
+		suite.T().Fatalf("Error marshalling user: %v", err)
+	}
+	response, _ := http.Post(suite.testingServer.URL+"/login", "application/json", bytes.NewBuffer(requestbody))
+	suite.Equal(http.StatusOK, response.StatusCode)
+	assert.Equal(suite.T(), "token", response.Status)
+	
+	suite.usercase.AssertExpectations(suite.T())
+}	
+func TestUsercontroller(t *testing.T) {
+	suite.Run(t, new(UserControllerTestSuite))
+}

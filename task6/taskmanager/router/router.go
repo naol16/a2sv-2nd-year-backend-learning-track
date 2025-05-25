@@ -16,6 +16,5 @@ func SetupRouter() *gin.Engine {
 	router.DELETE("/tasks/:id", middleware.AuthMiddleware(),middleware.AuthorizeRole("admin"),controller.DeleteTask)
 	router.POST("/tasks/user/register",controller.CreateUser)
 	router.POST("/tasks/user/login",controller.Loginuser)
-
 	return router
 }
